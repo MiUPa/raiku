@@ -7,7 +7,8 @@
   "scripts": {
     "start": "npx serve .",
     "generate-post": "node scripts/generate-prediction.js",
-    "build-history": "node scripts/build-full-history.js"
+    "build-history": "node scripts/build-full-history.js",
+    "generate-rss": "node scripts/generate-rss.js"
   },
   "keywords": [
     "raiku",
