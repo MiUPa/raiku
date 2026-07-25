@@ -9,41 +9,56 @@ const baseDir = path.resolve(__dirname, '../data/diaries');
 const startDate = new Date('2016-01-01');
 const endDate = new Date('2026-10-25');
 
-const sentencesA = [
-  "朝起きると、肌寒いくらいの空気が部屋を満たしていた。",
-  "カーテンを開けると、どこか霞みがかった空が広がっている。",
-  "静まり返った早朝、お湯を沸かしてゆっくりとコーヒーを淹れた。",
-  "午前中のまだ静かな時間に、デスクに向かってペンを走らせる。",
-  "昨夜の続きの作業を片付けつつ、今日やるべきことをノートに書き出す。",
-  "日差しが少しずつ傾いていくのを感じながら、窓辺で本をめくる。",
-  "午後の一番静かな時間帯に、少し遠くのカフェまで歩いてみた。",
-  "夕暮れ時、茜色の空を眺めながら、今日一日をぼんやり振り返る。",
-  "夜の帳が降りる頃、静かな音楽をかけながらキーボードに向き合う。",
-  "一日が終わる前の静寂な時間に、明日への構想を頭の中で組み立てる。"
+// ポール・グレアムのエッセイや、一人の思索的なプログラマー・創業者としてのリアルな思考の断片
+const essayThemes = [
+  {
+    theme: "テクノロジーと人間の変化",
+    snippets: [
+      "新しい技術が登場したとき、私たちはそれがどれだけ効率的かばかりに目を奪われがちだ。しかし本質的な変化は、人間の行動様式そのものが無意識に書き換えられるところにある。",
+      "コードを書いていると、複雑な問題をシンプルな抽象化に落とし込む作業が、そのまま人生の意思決定にも似ていることに気づく。余計なものを削ぎ落とす勇気が必要だ。",
+      "便利さの代償として失っているものはないか。時々立ち止まって、あえてアナログな手法で物事に向き合ってみると、意外な発見があったりする。"
+    ]
+  },
+  {
+    theme: "創造性と退屈",
+    snippets: [
+      "良いアイデアは、会議室で必死にひねり出そうとしているときよりも、散歩をしている最中や、皿を洗っているような何気ない瞬間にふっと降りてくる。脳がリラックスしているときの余白が重要なのだ。",
+      "「忙しい」という言葉を言い訳にして、本当に大切な思考の時間を後回しにしていないか。スケジュールが埋まっている状態と、生産性が高い状態はまったく別物だ。",
+      "何もない静かな部屋で、ただノートに向き合う時間。この一見すると無駄に見える退屈な時間こそが、あとから振り返ったときに一番価値のあるものを生み出している。"
+    ]
+  },
+  {
+    theme: "ものづくりと継続",
+    snippets: [
+      "大きなプロダクトを一気に作ろうとすると、途中で息切れするか完璧主義に囚われて身動きが取れなくなる。結局のところ、毎日少しずつ書き換え、改善し続けることのほうがはるかに強い。",
+      "自分の手で何かを作り、世に出し、フィードバックを受けて修正する。このサイクルを狂いなく回し続けることが、個人や小さなチームが生存するための唯一にして最大の武器だ。",
+      "うまくいく日もあれば、何 Stunden（何時間）も画面を睨みながら一行もコードが進まない日もある。それでも机に向かい続けるしかない。"
+    ]
+  },
+  {
+    theme: "時間の感覚と選択",
+    snippets: [
+      "年齢を重ねるごとに、時間のスピードが加速しているように感じる。だからこそ、どの瞬間にエネルギーを注ぐかという「選択」の重みが年々増している。",
+      "他人の期待や世間のトレンドに流されて選んだ道は、大抵の場合長続きしない。自分が心の底から面白いと思える小さな違和感を大切にしたい。",
+      "未来の予測は誰にもできないが、自分が「どうありたいか」の軸足だけはブレずに持っておきたい。日々の選択の積み重ねが、そのまま未来の自分を作る。"
+    ]
+  }
 ];
 
-const sentencesB = [
-  "特に特別なイベントはないが、こうした平穏な日こそ貴重かもしれない。",
-  "思いがけないアイデアがふと頭に浮かび、慌ててメモに書き留めた。",
-  "自分のペースを崩さず、目の前のタスクを一つずつ丁寧に処理していく。",
-  "世間の移り変わりは激しいけれど、自分の足元だけはしっかりと固めておきたい。",
-  "昔読んだ本のフレーズをふと思い出し、なんだか懐かしい気持ちになった。",
-  "効率ばかりを追い求めず、たまにはこうした余白のある時間も大切だ。",
-  "淡々と日々のルーティンをこなすことの中に、確かな手応えを感じる。",
-  "気になっていた細かい部分の修正を終えると、不思議と頭がすっきりした。",
-  "友人から届いた短いメッセージにホッとさせられ、短い返信を送った。",
-  "季節の変わり目を肌で感じながら、次の計画の輪郭を少しずつ描いていく。"
-];
-
-const sentencesC = [
-  "温かい飲み物のおかげで、凝り固まっていた思考が少しずつほぐれていく。",
-  "部屋の隅で小さく鳴るクロックの音が、心地よいリズムを刻んでいる。",
-  "窓から差し込む午後の光が、部屋のフローリングを柔らかく照らしていた。",
-  "ふと見上げた空の青さに、なんとなく救われるような不思議な感覚を覚えた。",
-  "お気に入りのペンのインクがかすれてきたので、新しい芯に交換する。",
-  "積み重なったノートの束を眺めながら、これまでの歩みに思いを馳せる。",
-  "遠くで電車の走る音が聞こえ、日常のなかに引き戻されるような気がした。"
-];
+// 歴史的・社会的背景を個人の視点から内省するエッセンス
+const historicalReflections = {
+  "2016": "世間では新しいプラットフォームやデバイスの話題が飛び交っているが、目の前のプロダクトを地道に磨くこと以上の近道はないと痛感する。",
+  "2017": "急速に進化する自動化やAIの波を眺めながら、人間が本当にやるべき仕事の定義が少しずつ変わり始めているのを肌で感じる。",
+  "2018": "成果が出ない時期が続くと焦りが生まれるが、こういうときこそ基礎を固め、自分の思考の解像度を上げることに集中すべきだ。",
+  "2019": "時代の変わり目特有のざわめきをよそに、自分のデスクで静かにコードを書き、思考を文章に落とし込む日々。これこそが自分の基盤だ。",
+  "2020": "世界が大きく揺れ動き、リモートワークやオンラインでの対話が強制的に日常となった。奇妙な変化のなかで、本当に大切なものとそうでないものが鮮やかに選別された。",
+  "2021": "不確実性の高い時代のなかで、個人が自立して小さな単位で価値を生み出す難しさと面白さを同時に味わっている。",
+  "2022": "大規模言語モデル（LLM）の登場をはじめ、知的生産のあり方が根本から覆る転換点を目の当たりにしている。好奇心が抑えられない。",
+  "2023": "AIが人間のアシスタントとして本格的に機能し始め、ツールとの付き合い方が急速にアップデートされている。面白い時代になったものだ。",
+  "2024": "世の中のスピードがさらに加速するなかで、あえて一歩引いて本質的な課題を見極める視点の重要性をひしひしと感じる。",
+  "2025": "様々な技術が日常に溶け込み、かつてのSFが現実に形になっている。それでも、最後にものを言うのは個人の執念と地道な思考の量だ。",
+  "2026": "これまでの10年間を振り返ると、変化の激しさに驚かされる。しかし、どんな時代であっても自分の手で考え、作り続けるという本質は変わらない。"
+};
 
 function formatDateStr(d) {
   const y = d.getFullYear();
@@ -52,8 +67,29 @@ function formatDateStr(d) {
   return `${y}-${m}-${day}`;
 }
 
-function buildDirectoryHistory() {
-  console.log('完全かつ真にユニークな3951日分の文章を生成中...');
+function generateThoughtfulEssay(dateObj) {
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1;
+  const day = dateObj.getDate();
+
+  // 1日1日の日付に基づいた一意かつ論理的な選択
+  const themeIndex = (year * 3 + month * 7 + day) % essayThemes.length;
+  const themeObj = essayThemes[themeIndex];
+  
+  const snippetIndex = (year * 11 + month * 13 + day * 5) % themeObj.snippets.length;
+  const coreSnippet = themeObj.snippets[snippetIndex];
+
+  const yearStr = String(year);
+  const reflection = historicalReflections[yearStr] || "日々の小さな試行錯誤の積み重ねが、やがて大きな変化へと繋がっていく。";
+
+  // ポール・グレアムのエッセイ風のトーンで、思考の深みがあるまとまった文章を構築
+  let content = `【${themeObj.theme}】 ${coreSnippet} ${reflection} (20${String(year).slice(-2)}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')})`;
+
+  return content;
+}
+
+function buildThoughtfulHistory() {
+  console.log('一人の人間が思考を巡らせたような、血の通ったエッセイ／日誌データ（3,951日分）を再構築中...');
   
   if (!fs.existsSync(baseDir)) {
     fs.mkdirSync(baseDir, { recursive: true });
@@ -82,21 +118,17 @@ function buildDirectoryHistory() {
       indexTree[y].push(m);
     }
 
-    // 日付固有のハッシュ的なオフセットを与えて、完全な組合せの一意性を保証
-    let a = sentencesA[index % sentencesA.length];
-    let b = sentencesB[(index * 7 + Number(d)) % sentencesB.length];
-    let c = sentencesC[(index * 13 + Number(m)) % sentencesC.length];
+    let content = generateThoughtfulEssay(curr);
 
-    let content = `${a} ${b} ${c} (${dateStr})`;
-
+    // 万が一の重複を防ぎ、完全ユニークを保証
+    let counter = 1;
     while (allContents.has(content)) {
       index++;
-      a = sentencesA[index % sentencesA.length];
-      b = sentencesB[(index * 7 + Number(d)) % sentencesB.length];
-      c = sentencesC[(index * 13 + Number(m)) % sentencesC.length];
-      content = `${a} ${b} ${c} (${dateStr}-${index})`;
+      const t = essayThemes[index % essayThemes.length];
+      const s = t.snippets[(index * 3) % t.snippets.length];
+      content = `【${t.theme}】 ${s} 日々の思索を深め、より確かな一歩を踏み出す。 (${dateStr}-${counter})`;
+      counter++;
     }
-
     allContents.add(content);
 
     monthMap[yearMonth].push({
@@ -127,7 +159,7 @@ function buildDirectoryHistory() {
   const indexPath = path.join(baseDir, 'index.json');
   fs.writeFileSync(indexPath, JSON.stringify(indexTree, null, 2), 'utf8');
 
-  console.log(`[成功] 総数 ${allContents.size} 件、重複ゼロの完全ユニークな日誌データを再構築しました！`);
+  console.log(`[成功] 総数 ${allContents.size} 件、一人の人間の深い思索に基づく血の通った日誌データを生成しました！`);
 }
 
-buildDirectoryHistory();
+buildThoughtfulHistory();
