@@ -3,88 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>合同会社来Q (RAIKU LLC) — Geminiが予想する半年後の世界</title>
-  <meta name="description" content="合同会社来Q（らいく）公式ブログ。AIモデルGeminiが毎日ちょうど半年後の世界をシミュレーション＆予想レポート。">
+  <title>来Q</title>
+  <meta name="description" content="3ヶ月後の記憶と日記。">
   
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Shippori Mincho -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
   
-  <!-- Stylesheet -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Site Header -->
-  <header class="site-header">
-    <div class="header-container">
-      <div class="brand-wrapper">
-        <div class="brand-logo">来</div>
-        <div class="brand-info">
-          <span class="brand-name">合同会社来Q</span>
-          <span class="brand-sub">RAIKU LLC — AI Prediction Lab</span>
-        </div>
-      </div>
-      <div class="badge-engine">
-        <span class="pulse-dot"></span>
-        <span>GEMINI 3.6 ENGINE ONLINE</span>
-      </div>
-    </div>
-  </header>
+  <div class="container">
+    <!-- Minimal Header -->
+    <header class="site-header">
+      <h1 class="site-title">来 Q</h1>
+      <p class="site-subtitle">3ヶ月後の日誌</p>
+    </header>
 
-  <!-- Main Content Area -->
-  <main class="main-content">
-    
-    <!-- Hero / Top Featured Prediction -->
-    <section class="hero-section" id="hero-prediction">
-      <!-- Dynamically filled by JavaScript -->
-    </section>
+    <!-- Diary Feed -->
+    <main id="diary-feed" class="diary-feed">
+      <!-- Loaded via JavaScript -->
+    </main>
 
-    <!-- Controls Toolbar -->
-    <section class="toolbar-section">
-      <div class="category-filters" id="category-filters">
-        <button class="filter-btn active" data-category="ALL">すべて</button>
-        <button class="filter-btn" data-category="テクノロジー">テクノロジー</button>
-        <button class="filter-btn" data-category="科学・生活">科学・生活</button>
-        <button class="filter-btn" data-category="社会・交通">社会・交通</button>
-        <button class="filter-btn" data-category="カルチャー">カルチャー</button>
-      </div>
-
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search-input" class="search-input" placeholder="キーワード検索...">
-      </div>
-    </section>
-
-    <!-- Prediction Archive Cards Grid -->
-    <section class="cards-grid" id="predictions-grid">
-      <!-- Dynamically filled by JavaScript -->
-    </section>
-
-  </main>
-
-  <!-- Detail Modal -->
-  <div class="modal-overlay" id="detail-modal">
-    <div class="modal-card">
-      <button class="modal-close" id="modal-close-btn">&times;</button>
-      <div id="modal-content"></div>
-    </div>
+    <!-- Footer -->
+    <footer class="site-footer">
+      <p>© 合同会社来Q</p>
+    </footer>
   </div>
 
-  <!-- Site Footer -->
-  <footer class="site-footer">
-    <div class="footer-container">
-      <p><strong>合同会社来Q（らいく / RAIKU LLC）</strong></p>
-      <p class="footer-disclaimer">
-        ※ 本サイトの未来予想レポートは、毎日Gemini AIによって「ちょうど6ヶ月後の世界」を分析し自動生成されています。<br>
-        Powered by Google Gemini 3.6 & GitHub Actions.
-      </p>
-      <p style="font-size: 0.75rem; color: var(--text-dim);">© 2026 RAIKU LLC. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <!-- Main Logic Script -->
   <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
-name: Daily Gemini Future Prediction
+name: Daily Future Diary
 
 on:
   schedule:
     # 毎日 UTC 15:00 (日本時間 JST 0:00) に自動実行
     - cron: '0 15 * * *'
-  workflow_dispatch: # 手動実行トリガー
+  workflow_dispatch:
 
 jobs:
   generate:
@@ -20,14 +20,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Generate New Prediction
+      - name: Generate New Diary Entry
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/generate-prediction.js
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "RAIKU-Gemini-Bot"
+          git config --global user.name "RAIKU-Bot"
           git config --global user.email "bot@raiku.llc"
-          git add data/predictions.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "feat(daily): add daily prediction by Gemini AI [skip ci]" && git push)
+          git add data/diaries.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "feat(daily): add daily future diary entry [skip ci]" && git push)

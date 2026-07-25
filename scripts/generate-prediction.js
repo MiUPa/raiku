@@ -5,59 +5,55 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const jsonPath = path.resolve(__dirname, '../data/predictions.json');
+const jsonPath = path.resolve(__dirname, '../data/diaries.json');
 
-// 本日の日付と半年後（6ヶ月後）の日付を取得
+// 本日の日付と3ヶ月後の日付を取得
 function getDates() {
   const today = new Date();
   const target = new Date();
-  target.setMonth(target.getMonth() + 6);
+  target.setMonth(target.getMonth() + 3);
 
   const formatDate = (d) => d.toISOString().split('T')[0];
 
   return {
     published_date: formatDate(today),
     target_date: formatDate(target),
-    id: `pred-${formatDate(today).replace(/-/g, '')}`
+    id: `diary-${formatDate(today).replace(/-/g, '')}`
   };
 }
 
-async function generatePrediction() {
+async function generateDiary() {
   const { published_date, target_date, id } = getDates();
-  console.log(`[合同会社来Q - Gemini Generator] 生成開始`);
-  console.log(`投稿日: ${published_date} -> 予想対象日: ${target_date}`);
+  console.log(`[合同会社来Q - 未来日記 Generator] 開始`);
+  console.log(`本日: ${published_date} -> 3ヶ月後の対象日: ${target_date}`);
 
-  // 既に本日の記事が存在するかチェック
-  let predictions = [];
+  let diaries = [];
   if (fs.existsSync(jsonPath)) {
     const raw = fs.readFileSync(jsonPath, 'utf8');
-    predictions = JSON.parse(raw);
+    diaries = JSON.parse(raw);
   }
 
-  const existing = predictions.find(p => p.published_date === published_date);
+  const existing = diaries.find(d => d.published_date === published_date);
   if (existing) {
-    console.log(`本日の予測記事 (${published_date}) は既に生成済みです。スキップします。`);
+    console.log(`本日の日記 (${published_date}) は既に存在するためスキップします。`);
     return;
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
-  let newPrediction = null;
+  let newContent = null;
 
   if (apiKey) {
-    console.log('GEMINI_API_KEY が検出されました。Gemini API による予測生成を試みます...');
+    console.log('GEMINI_API_KEY を使用して3ヶ月後の日記を生成中...');
     try {
-      const prompt = `あなたは「合同会社来Q（らいく）」の最高未来予測AIエンジン（Gemini 3.6）です。
-本日の日付は ${published_date} です。ちょうど6ヶ月後の【 ${target_date} 】の世界で起きているテクノロジー、社会、文化、ライフスタイル、または科学的進歩に関するリアルな未来予測記事を作成してください。
+      const prompt = `あなたは ${target_date} （今から3ヶ月後）の世界に住んでいる一人の人間です。
+その日の出来事、ふと感じた違和感、あるいは日常の静かな1シーンについての個人的な日記・独白を書いてください。
 
-以下のJSONフォーマットのみを出力してください（余計な解説は不要です）:
+【絶対ルール】
+- 生成AIで作った雰囲気（解説調、まとめ、です・ます調のプレゼン感、箇条書き、ポジティブすぎる未来都市の宣伝など）は絶対に排除してください。
+- 本当に個人が手帳やSNSに書いたような、不穏さ、静けさ、ミステリアスな空気、日常のリアル感を持つ150〜300文字程度の文章にしてください。
+- 以下のJSON形式のみを出力してください:
 {
-  "title": "驚きと説得力のある予測記事タイトル",
-  "category": "テクノロジー または 科学・生活 または 社会・交通 または カルチャー",
-  "summary": "100文字程度の要約",
-  "content": "300文字程度の具体的でワクワクする予測ストーリー。現在の兆候からどう繋がっているか。",
-  "confidence": "85%〜95%の確率表示",
-  "key_signals": ["観測された兆候1", "観測された兆候2", "観測された兆候3"],
-  "impact": "社会的・産業的インパクトの要約"
+  "content": "日記の本文"
 }`;
 
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
@@ -74,59 +70,36 @@ async function generatePrediction() {
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {
           const parsed = JSON.parse(text);
-          newPrediction = {
-            id,
-            published_date,
-            target_date,
-            ...parsed
-          };
-          console.log('Gemini API による生成が正常に完了しました！');
+          if (parsed.content) {
+            newContent = parsed.content;
+          }
         }
-      } else {
-        console.warn('APIリクエストに失敗したためフォールバック生成を行います。 Status:', res.status);
       }
     } catch (e) {
       console.error('Gemini API呼び出しエラー:', e.message);
     }
   }
 
-  // フォールバック（APIキー未設定またはエラー時）
-  if (!newPrediction) {
-    console.log('シミュレーションエンジン（フォールバック）で記事を自動生成します...');
-    const fallbackTopics = [
-      {
-        title: "完全自動翻訳イヤーピースの一般普及で『言語の壁』が完全解消へ",
-        category: "テクノロジー",
-        summary: "相手の言葉が遅延なく母国語の音声として聞こえるウェアラブルデバイスが標準化。",
-        content: `${target_date}のグローバルビジネス現場では、通訳や外国語学習の概念が大きく変容しています。超低遅延音声翻訳AIチップを搭載した耳穴型デバイスが一般化し、異なる言語を話す人々がストレスなくネイティブスピードでディスカッションできるようになりました。`,
-        confidence: "91%",
-        key_signals: ["超小型NN処理チップの省電力化", "マルチリンガルリアルタイムモデルの精度99.2%到達", "クロスカルチャーリモートワークの増加"],
-        impact: "海外旅行・国際取引の障壁が消失し、グローバル人材の流動性が一気に加速。"
-      },
-      {
-        title: "自律型マイクログリッドと家庭用全固体電池による電力自給自足を達成する地域が急増",
-        category: "科学・生活",
-        summary: "地域ごとの太陽光＋次世代バッテリーシェアリングにより、電力会社の巨大送電網への依存度が大幅低下。",
-        content: `${target_date}、持続可能な分散型エネルギーシステムが結実。各家庭のスマートバッテリーと地域の再生可能発電がAI制御で瞬時に融通し合い、災害時でも停電しない街づくりが全角で加速しています。`,
-        confidence: "87%",
-        key_signals: ["全固体電池の製造コスト半減", "P2P電力取引プラットフォームの規制緩和", "スマートグリッド向けエッジAIの導入増"],
-        impact: "電気代の定額・低価格化と、都市全体のカーボンニュートラル早期達成。"
-      }
+  // フォールバック（APIキー未設定時）
+  if (!newContent) {
+    const fallbacks = [
+      "夕方、近所の川沿いを歩いていたら水面が妙に青く光っていた。すれ違った散歩中の老人に「綺麗ですね」と声をかけたら、怪訝な顔で首を振られた。僕にしか見えていなかったのだろうか。家に戻ると、部屋の温度が少しだけ下がっていた。",
+      "コンビニの棚から、いつものお茶が全部消えていた。店員に尋ねると「先週から入荷していませんよ」と淡々と言われた。先週も買ったはずなのに、思い出せない。自分の記憶の方が怪しい気がしてきた。",
+      "仕事帰りの電車の中、乗客のほとんどが目を閉じて静かに頷いていた。ヘッドホンをしているわけでもなさそうなのに。窓の外を流れる夜の街は、いつもより少し明るかった。"
     ];
-
-    const template = fallbackTopics[Math.floor(Math.random() * fallbackTopics.length)];
-    newPrediction = {
-      id,
-      published_date,
-      target_date,
-      ...template
-    };
+    newContent = fallbacks[Math.floor(Math.random() * fallbacks.length)];
   }
 
-  // predictions.json の先頭に追加して保存
-  predictions.unshift(newPrediction);
-  fs.writeFileSync(jsonPath, JSON.stringify(predictions, null, 2), 'utf8');
-  console.log(`[成功] 新しい予測記事 (ID: ${id}) を ${jsonPath} に書き込みました。`);
+  const newEntry = {
+    id,
+    published_date,
+    target_date,
+    content: newContent
+  };
+
+  diaries.unshift(newEntry);
+  fs.writeFileSync(jsonPath, JSON.stringify(diaries, null, 2), 'utf8');
+  console.log(`[成功] 日記エントリ (ID: ${id}) を更新しました。`);
 }
 
-generatePrediction().catch(console.error);
+generateDiary().catch(console.error);
