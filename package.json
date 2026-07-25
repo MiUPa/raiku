@@ -1,18 +1,17 @@
 {
   "name": "raiku",
   "version": "1.0.0",
-  "description": "合同会社来Q - Geminiが毎日半年後の世界を予想するブログ",
+  "description": "合同会社来Q - 2016年1月1日〜2026年10月25日 全日分の日誌",
   "main": "index.html",
   "type": "module",
   "scripts": {
     "start": "npx serve .",
-    "generate-post": "node scripts/generate-prediction.js"
+    "generate-post": "node scripts/generate-prediction.js",
+    "build-history": "node scripts/build-full-history.js"
   },
   "keywords": [
-    "gemini",
-    "ai",
-    "future-prediction",
-    "raiku"
+    "raiku",
+    "diary"
   ],
   "author": "合同会社来Q",
   "license": "MIT",
