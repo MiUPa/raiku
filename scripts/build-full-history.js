@@ -4,16 +4,14 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const jsonPath = path.resolve(__dirname, '../data/diaries.json');
+const baseDir = path.resolve(__dirname, '../data/diaries');
 
-// 2016-01-01 から 2026-10-25 までの全日付を生成
 const startDate = new Date('2016-01-01');
 const endDate = new Date('2026-10-25');
 const todayCutoff = new Date('2026-07-25');
 
-// 主要ニュース・トピックス辞書 (年・月・日)
 const historicalEvents = {
-  "2016-01-01": "元旦。マイナス金利政策やSMAP解散騒動、リオ五輪の話題で賑やかな幕開け。",
+  "2016-01-01": "マイナス金利政策やSMAP解散騒動、リオ五輪の話題で賑やかな幕開け。",
   "2016-04-14": "熊本地震が発生。猛烈な揺れと度重なる余震に不安が広がる。",
   "2016-08-06": "リオデジャネイロオリンピック開幕。連日のメダルラッシュに湧く。",
   "2016-11-09": "アメリカ大統領選でドナルド・トランプ氏が勝利。世界に激震。",
@@ -71,6 +69,7 @@ function formatDateStr(d) {
   return `${y}-${m}-${day}`;
 }
 
+// 本文から冒頭の日付（YYYY年M月D日。）を取り除く！
 function generateEntryContent(dateObj) {
   const dateStr = formatDateStr(dateObj);
   const year = dateObj.getFullYear();
@@ -80,37 +79,34 @@ function generateEntryContent(dateObj) {
   const isFuture = dateObj > todayCutoff;
   const event = historicalEvents[dateStr];
 
-  let text = `${year}年${month}月${day}日。`;
+  let text = "";
 
   if (event) {
-    text += ` 報道では「${event}」とのニュースが大きく扱われていた。`;
+    text += `報道では「${event}」とのニュースが大きく扱われていた。`;
   }
 
   if (!isFuture) {
-    // 過去〜現在（2016-01-01〜2026-07-25）
     const mood = dailyMoods[(year * 365 + month * 31 + day) % dailyMoods.length];
     const weather = weatherVariations[(year * 12 + day) % weatherVariations.length];
     
-    text += ` 今日の天気は${weather}。${mood}`;
+    text += `今日の天気は${weather}。${mood}`;
     
     if (year === 2016) {
-      text += ` 新しい年の空気が街に漂っている。スマートフォンを眺めながら、これからの時代がどう変化していくのかをぼんやりと考えていた。時代の節目を感じさせる出来事がニュースで流れるたび、自分自身の日常のささやかな営みの大切さを再確認する。夜は温かい食事をとり、静かに読書をして過ごした。`;
+      text += `新しい年の空気が街に漂っている。スマートフォンを眺めながら、これからの時代がどう変化していくのかをぼんやりと考えていた。時代の節目を感じさせる出来事がニュースで流れるたび、自分自身の日常のささやかな営みの大切さを再確認する。夜は温かい食事をとり、静かに読書をして過ごした。`;
     } else if (year === 2020) {
-      text += ` 世界中が感染症の話題で持ちきりだ。マスクを着用して外に出ると、行き交う人々の表情もうかがえない。手洗いや消毒がすっかり日課になった。部屋の中で過ごす時間が長くなり、当たり前だった日常のありがたみを痛感する。夜、静まり返った街の灯りをベランダから見つめていた。`;
+      text += `世界中が感染症の話題で持ちきりだ。マスクを着用して外に出ると、行き交う人々の表情もうかがえない。手洗いや消毒がすっかり日課になった。部屋の中で過ごす時間が長くなり、当たり前だった日常のありがたみを痛感する。夜、静まり返った街の灯りをベランダから見つめていた。`;
     } else if (year === 2024) {
-      text += ` 時代はAIの進化や国際情勢の変化で目まぐるしく動き続けている。街中のデジタルサイネージには最新の技術やニュースが次々と映し出されるが、自分の足元にある日常は変わらず淡々と続いている。近所の公園を歩きながら、変わるものと変わらないものについて考えを巡らせた。`;
+      text += `時代はAIの進化や国際情勢の変化で目まぐるしく動き続けている。街中のデジタルサイネージには最新の技術やニュースが次々と映し出されるが、自分の足元にある日常は変わらず淡々と続いている。近所の公園を歩きながら、変わるものと変わらないものについて考えを巡らせた。`;
     } else {
-      text += ` ニュースから流れる世の中の動向を聞きながら、日々の自分の生活を丁寧に重ねていく。パソコンに向かって作業を進め、時折コーヒーを淹れて一息つく。特別な事件がない日であっても、後から振り返ればかけがえのない一日だったと気づくのかもしれない。今夜も静かに一日が更けていく。`;
+      text += `ニュースから流れる世の中の動向を聞きながら、日々の自分の生活を丁寧に重ねていく。パソコンに向かって作業を進め、時折コーヒーを淹れて一息つく。特別な事件がない日であっても、後から振り返ればかけがえのない一日だったと気づくのかもしれない。今夜も静かに一日が更けていく。`;
     }
   } else {
-    // 未来（2026-07-26〜2026-10-25）
     const mystery = futureMysteries[(month * 31 + day) % futureMysteries.length];
-    text += ` ${mystery} ニュースや街の音はどこか遠く感じられ、自分の周りだけ時間の流れが少し変わっているような気がする。特別な恐怖があるわけではないけれど、3ヶ月後の世界へ向かってゆっくりと景色が変わっていく感覚。手元のノートにペンで言葉を残し、静かに目を閉じた。`;
+    text += `${mystery} ニュースや街の音はどこか遠く感じられ、自分の周りだけ時間の流れが少し変わっているような気がする。特別な恐怖があるわけではないけれど、未来へ向かってゆっくりと景色が変わっていく感覚。手元のノートにペンで言葉を残し、静かに目を閉じた。`;
   }
 
-  // 300字〜600字の範囲になるように調整
   while (text.length < 320) {
-    text += ` 日々の記憶は少しずつ薄れていくけれど、こうして文字に残しておくことで、過去と未来の自分がどこかで繋がっているような心地がする。`;
+    text += `日々の記憶は少しずつ薄れていくけれど、こうして文字に残しておくことで、過去と未来の自分がどこかで繋がっているような心地がする。`;
   }
 
   if (text.length > 580) {
@@ -120,32 +116,70 @@ function generateEntryContent(dateObj) {
   return text;
 }
 
-function buildFullHistory() {
-  console.log('2016-01-01 から 2026-10-25 までの全日分（毎日）の日誌を生成中...');
-  const entries = [];
+function buildDirectoryHistory() {
+  console.log('2016-01-01 〜 2026-10-25 を年・月ごとのディレクトリ構造で出力します...');
+  
+  if (!fs.existsSync(baseDir)) {
+    fs.mkdirSync(baseDir, { recursive: true });
+  }
+
+  const indexTree = {}; // { "2016": ["01", "02", ...], "2017": [...] }
+  const monthMap = {}; // "2016/01" -> [entries]
+
   const curr = new Date(startDate);
 
   while (curr <= endDate) {
     const dateStr = formatDateStr(curr);
-    const content = generateEntryContent(curr);
+    const [y, m, d] = dateStr.split('-');
+    const yearMonth = `${y}/${m}`;
 
-    entries.push({
+    if (!monthMap[yearMonth]) {
+      monthMap[yearMonth] = [];
+    }
+
+    if (!indexTree[y]) {
+      indexTree[y] = [];
+    }
+    if (!indexTree[y].includes(m)) {
+      indexTree[y].push(m);
+    }
+
+    monthMap[yearMonth].push({
       id: `diary-${dateStr.replace(/-/g, '')}`,
       published_date: dateStr <= '2026-07-25' ? dateStr : '2026-07-25',
       target_date: dateStr,
-      content: content
+      content: generateEntryContent(curr)
     });
 
     curr.setDate(curr.getDate() + 1);
   }
 
-  console.log(`合計 ${entries.length} 日分（毎日）の日誌エントリが生成されました。`);
-  
-  // 新しい順（2026-10-25 -> 2016-01-01）に並べ替え
-  entries.sort((a, b) => new Date(b.target_date) - new Date(a.target_date));
+  // 年・月ごとのフォルダと JSON ファイルを作成
+  for (const ym of Object.keys(monthMap)) {
+    const [y, m] = ym.split('/');
+    const dirPath = path.join(baseDir, y);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
 
-  fs.writeFileSync(jsonPath, JSON.stringify(entries, null, 2), 'utf8');
-  console.log(`[成功] 全 ${entries.length} 件の日誌を ${jsonPath} に保存しました！`);
+    // 新しい順（日付降順）
+    monthMap[ym].sort((a, b) => new Date(b.target_date) - new Date(a.target_date));
+
+    const filePath = path.join(dirPath, `${m}.json`);
+    fs.writeFileSync(filePath, JSON.stringify(monthMap[ym], null, 2), 'utf8');
+  }
+
+  // ルートインデックスファイル index.json を保存
+  const indexPath = path.join(baseDir, 'index.json');
+  fs.writeFileSync(indexPath, JSON.stringify(indexTree, null, 2), 'utf8');
+
+  // 互換性のための単一の data/diaries.json も最新版に更新
+  const allEntries = Object.values(monthMap).flat();
+  allEntries.sort((a, b) => new Date(b.target_date) - new Date(a.target_date));
+  const diariesJsonPath = path.resolve(__dirname, '../data/diaries.json');
+  fs.writeFileSync(diariesJsonPath, JSON.stringify(allEntries, null, 2), 'utf8');
+
+  console.log(`[成功] 年・月フォルダ構造 (data/diaries/YYYY/MM.json) をすべて構築完了しました！`);
 }
 
-buildFullHistory();
+buildDirectoryHistory();

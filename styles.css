@@ -1,5 +1,5 @@
 /* ==========================================================================
-   合同会社来Q (RAIKU LLC) — 3ヶ月後の日記
+   合同会社来Q (RAIKU LLC) — 日誌
    Design System: Ultra-Minimalist Mysterious Dark Serif
    ========================================================================== */
 
@@ -30,50 +30,121 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4rem 1.5rem 6rem;
+  padding: 3rem 1.5rem 6rem;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 /* Container */
 .container {
-  max-width: 620px;
+  max-width: 680px;
   width: 100%;
 }
 
 /* Header */
 .site-header {
-  margin-bottom: 5rem;
+  margin-bottom: 3rem;
   text-align: center;
 }
 
 .site-title {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 400;
   letter-spacing: 0.25em;
   color: #f4f4f5;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.5rem;
 }
 
 .site-subtitle {
   font-size: 0.8rem;
   color: var(--text-dim);
   letter-spacing: 0.15em;
-  font-family: var(--font-serif);
+}
+
+/* Year & Month Hierarchy Nav */
+.archive-nav {
+  margin-bottom: 3.5rem;
+  padding: 1.2rem;
+  background: rgba(18, 18, 22, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+.year-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.year-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-dim);
+  padding: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.year-btn:hover {
+  color: var(--text-main);
+  border-color: var(--accent-soft);
+}
+
+.year-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: #ffffff;
+  font-weight: bold;
+}
+
+.month-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-top: 0.8rem;
+}
+
+.month-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  padding: 3px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.month-btn:hover {
+  color: var(--text-main);
+}
+
+.month-btn.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: bold;
 }
 
 /* Diary Feed */
 .diary-feed {
   display: flex;
   flex-direction: column;
-  gap: 4.5rem;
+  gap: 4rem;
 }
 
 .entry-card {
   position: relative;
-  padding-bottom: 4.5rem;
+  padding-bottom: 3.5rem;
   border-bottom: 1px solid var(--text-subtle);
-  opacity: 0.9;
+  opacity: 0.92;
   transition: opacity 0.3s ease;
 }
 
@@ -86,28 +157,18 @@ body {
 }
 
 .entry-date {
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  margin-bottom: 1.2rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  letter-spacing: 0.12em;
-}
-
-.entry-date .date-target {
+  font-size: 0.88rem;
   color: #e4e4e7;
-  font-weight: 500;
-}
-
-.entry-date .date-sub {
-  font-size: 0.75rem;
-  color: var(--text-subtle);
+  margin-bottom: 1.2rem;
+  font-family: var(--font-serif);
+  letter-spacing: 0.12em;
+  border-left: 2px solid var(--accent-soft);
+  padding-left: 10px;
 }
 
 .entry-content {
-  font-size: 1.05rem;
-  color: #e4e4e7;
+  font-size: 1.02rem;
+  color: #d4d4d8;
   white-space: pre-wrap;
   word-break: break-word;
   line-height: 2.2;
