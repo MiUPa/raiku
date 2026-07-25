@@ -1,5 +1,5 @@
 /**
- * 合同会社来Q — 3ヶ月後の日誌
+ * 合同会社来Q — 日誌
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       <article class="entry-card">
         <div class="entry-date">
           <span class="date-target">${formatJapaneseDate(item.target_date)}</span>
-          <span class="date-sub">（3ヶ月後）</span>
         </div>
         <div class="entry-content">${escapeHtml(item.content)}</div>
       </article>

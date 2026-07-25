@@ -24,8 +24,8 @@ function getDates() {
 
 async function generateDiary() {
   const { published_date, target_date, id } = getDates();
-  console.log(`[合同会社来Q - 未来日記 Generator] 開始`);
-  console.log(`本日: ${published_date} -> 3ヶ月後の対象日: ${target_date}`);
+  console.log(`[合同会社来Q - 未来日誌 Generator] 開始`);
+  console.log(`本日: ${published_date} -> 対象日: ${target_date}`);
 
   let diaries = [];
   if (fs.existsSync(jsonPath)) {
@@ -35,7 +35,7 @@ async function generateDiary() {
 
   const existing = diaries.find(d => d.published_date === published_date);
   if (existing) {
-    console.log(`本日の日記 (${published_date}) は既に存在するためスキップします。`);
+    console.log(`本日の日誌 (${published_date}) は既に存在するためスキップします。`);
     return;
   }
 
@@ -43,17 +43,18 @@ async function generateDiary() {
   let newContent = null;
 
   if (apiKey) {
-    console.log('GEMINI_API_KEY を使用して3ヶ月後の日記を生成中...');
+    console.log('GEMINI_API_KEY を使用して日誌エントリを生成中...');
     try {
-      const prompt = `あなたは ${target_date} （今から3ヶ月後）の世界に住んでいる一人の人間です。
-その日の出来事、ふと感じた違和感、あるいは日常の静かな1シーンについての個人的な日記・独白を書いてください。
+      const prompt = `あなたは ${target_date} の世界を生きている一人の人間です。
+その日の出来事、ふと感じた違和感、あるいは日常の静かな1シーンについての個人的な日記・手記を【 300字 〜 600字 】のボリュームで書いてください。
 
 【絶対ルール】
-- 生成AIで作った雰囲気（解説調、まとめ、です・ます調のプレゼン感、箇条書き、ポジティブすぎる未来都市の宣伝など）は絶対に排除してください。
-- 本当に個人が手帳やSNSに書いたような、不穏さ、静けさ、ミステリアスな空気、日常のリアル感を持つ150〜300文字程度の文章にしてください。
+- 「（3ヶ月後）」やAIによる解説、箇条書き、まとめ、自己紹介などは一切書かないでください。
+- 生成AIで作った雰囲気（〜と考えられます、〜が期待されます、AIのプレゼン風など）は完全に排除してください。
+- 本当に個人が手帳やブログに残した生々しい日常、静けさ、ミステリアスな気配、時代の空気を描写してください。
 - 以下のJSON形式のみを出力してください:
 {
-  "content": "日記の本文"
+  "content": "300字〜600字の日記本文"
 }`;
 
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
@@ -82,12 +83,7 @@ async function generateDiary() {
 
   // フォールバック（APIキー未設定時）
   if (!newContent) {
-    const fallbacks = [
-      "夕方、近所の川沿いを歩いていたら水面が妙に青く光っていた。すれ違った散歩中の老人に「綺麗ですね」と声をかけたら、怪訝な顔で首を振られた。僕にしか見えていなかったのだろうか。家に戻ると、部屋の温度が少しだけ下がっていた。",
-      "コンビニの棚から、いつものお茶が全部消えていた。店員に尋ねると「先週から入荷していませんよ」と淡々と言われた。先週も買ったはずなのに、思い出せない。自分の記憶の方が怪しい気がしてきた。",
-      "仕事帰りの電車の中、乗客のほとんどが目を閉じて静かに頷いていた。ヘッドホンをしているわけでもなさそうなのに。窓の外を流れる夜の街は、いつもより少し明るかった。"
-    ];
-    newContent = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    newContent = `${target_date}。雨が朝から降り続いている。近所のスーパーに行くと、セルフレジの端末が画面ごしに「今日は少し疲れていませんか」と抑揚のない声で語りかけてきた。軽く会釈だけして電子マネーで支払いを済ませる。外に出ると、秋の澄んだ空気の中にどこか焦げたような微かな匂いが混ざっていた。すれ違う通行人は誰もマスクを外さず、イヤホンに耳を傾けたまま足早に通り過ぎていく。あの匂いについて誰かに尋ねてみようかとも思われたが、わざわざ立ち止まる理由も見つからずそのままアパートに戻った。部屋のラジオからは静寂に近いノイズが流れている。夏が始まる直前に感じていたあの予感は、ゆっくりと形を変えながらこの街の日常に溶け込んでいるのかもしれない。`;
   }
 
   const newEntry = {
@@ -99,7 +95,7 @@ async function generateDiary() {
 
   diaries.unshift(newEntry);
   fs.writeFileSync(jsonPath, JSON.stringify(diaries, null, 2), 'utf8');
-  console.log(`[成功] 日記エントリ (ID: ${id}) を更新しました。`);
+  console.log(`[成功] 日誌エントリ (ID: ${id}) を更新しました。`);
 }
 
 generateDiary().catch(console.error);
