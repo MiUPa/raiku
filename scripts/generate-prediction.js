@@ -4,7 +4,6 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const baseDir = path.resolve(__dirname, '../data/diaries');
 
 function getDates() {
@@ -24,7 +23,7 @@ function getDates() {
 async function generateDiary() {
   const { published_date, target_date, id } = getDates();
   const [y, m, d] = target_date.split('-');
-  console.log(`[合同会社来Q - 未来日誌 Generator] 開始`);
+  console.log(`[合同会社来Q - 未来ニュース日誌 Generator] 開始`);
   console.log(`本日: ${published_date} -> 対象日: ${target_date}`);
 
   const monthFilePath = path.join(baseDir, y, `${m}.json`);
@@ -45,15 +44,15 @@ async function generateDiary() {
   let newContent = null;
 
   if (apiKey) {
-    console.log('GEMINI_API_KEY を使用して日誌エントリを生成中...');
+    console.log('GEMINI_API_KEY を使用して最新の未来ニュース日誌を生成中...');
     try {
-      const prompt = `あなたは ${target_date} の世界を生きている一人の人間です。
-その日の出来事、ふと感じた違和感、あるいは日常の静かな1シーンについての個人的な日記・手記を【 300字 〜 600字 】のボリュームで書いてください。
+      const prompt = `あなたは ${target_date} の世界を生きている人間です。
+その日【 ${target_date} 】に実際にテレビやネットニュースで報道された具体的な出来事・技術革新・社会ニュース（例: 自動運転、医療技術、AI社会制度、宇宙開発など）を、あたかも当たり前の事実として日記のテーマに組み込んで【 300字 〜 600字 】で書いてください。
 
 【絶対ルール】
-- 本文の冒頭や途中に「${y}年${parseInt(m,10)}月${parseInt(d,10)}日」などの日付を一切入れないでください。本文は純粋な日記文章のみにしてください。
-- AIによる解説、箇条書き、まとめ、自己紹介などは一切書かないでください。
-- 本当に個人が手帳やブログに残した生々しい日常、静けさ、ミステリアスな気配を文章にしてください。
+- 冒頭や本文中に日付（「${y}年${parseInt(m,10)}月${parseInt(d,10)}日」）を入れないでください。
+- あたかもその日に本当にそのニュースが報道されたかのような、リアルで具体的なリアリティを出してください。
+- AIによる解説、箇条書き、まとめは不可。
 - 以下のJSON形式のみを出力してください:
 {
   "content": "300字〜600字の日記本文"
@@ -84,10 +83,9 @@ async function generateDiary() {
   }
 
   if (!newContent) {
-    newContent = `雨が朝から降り続いている。近所のスーパーに行くと、セルフレジの端末が画面ごしに「今日は少し疲れていませんか」と抑揚のない声で語りかけてきた。軽く会釈だけして電子マネーで支払いを済ませる。外に出ると、秋の澄んだ空気の中にどこか焦げたような微かな匂いが混ざっていた。すれ違う通行人は誰もマスクを外さず、イヤホンに耳を傾けたまま足早に通り過ぎていく。あの匂いについて誰かに尋ねてみようかとも思われたが、わざわざ立ち止まる理由も見つからずそのままアパートに戻った。部屋のラジオからは静寂に近いノイズが流れている。夏が始まる直前に感じていたあの予感は、ゆっくりと形を変えながらこの街の日常に溶け込んでいるのかもしれる。`;
+    newContent = `本日のニュースで、全自動生成AI映画がカンヌ国際映画祭の最高賞を受賞したと知る。監督も脚本も俳優もすべて自律AIが手がけた作品であり、エンターテインメントの歴史が完全に塗り替わった記念すべき日となった。街を行き交う人々の表情や、手元に届く日々の報せを見つめていると、世界は静かに、しかし決定的な方向へと進んでいるのだと実感する。文字として書き残しておくことで、いつか答え合わせができる日が来るだろう。`;
   }
 
-  // 冒頭の日付表記を安全にトリム
   newContent = newContent.replace(/^\d{4}年\d{1,2}月\d{1,2}日[。.\s]*/, '');
 
   const newEntry = {
@@ -99,7 +97,6 @@ async function generateDiary() {
 
   monthEntries.unshift(newEntry);
 
-  // フォルダが存在しない場合は作成
   const dirPath = path.join(baseDir, y);
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
@@ -107,7 +104,6 @@ async function generateDiary() {
 
   fs.writeFileSync(monthFilePath, JSON.stringify(monthEntries, null, 2), 'utf8');
 
-  // index.json の更新
   const indexPath = path.join(baseDir, 'index.json');
   let indexTree = {};
   if (fs.existsSync(indexPath)) {
