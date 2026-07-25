@@ -8,26 +8,51 @@ const baseDir = path.resolve(__dirname, '../data/diaries');
 
 const startDate = new Date('2016-01-01');
 const endDate = new Date('2026-10-25');
-const todayCutoff = new Date('2026-07-25');
 
-// 過去の日記に潜ませる、日常の文脈に溶け込んだ個人的な記憶・出来事
-const personalNotesPool = [
-  "朝からコーヒーを淹れ、机に向かう。特段何があるわけでもなく、ただ淡々と書き物をしたりコードを書いたりして一日が過ぎた。夜、窓を開けると少し冷たい風が入ってきた。",
-  "午前中は図書館へ行き、いくつか気になっていた本を借りてくる。昼食は近くのパン屋でサンドイッチを買って食べた。静かで穏やかな、こういう日も悪くない。",
-  "新しいノートブックを開き、今取り組んでいるプロジェクトの構想を書き殴る。頭の中の考えを外に吐き出すだけで、少し思考がクリアになるのを感じる。",
-  "午後から散歩に出る。途中で見かけた野良猫が日向ぼっこをしていて、しばらく足を止めて眺めてしまった。帰ってきてから、溜まっていたメールの返信を片付ける。",
-  "一日中、部屋にこもって作業。集中しすぎて気がつくと外が暗くなっていた。夕食に何を食べようか考えながら、今日書いたメモを読み返す。",
-  "友人から短いメッセージが届く。最近どうしているかという他愛のない内容に返信し、自分も近況を少しだけ伝えた。人と話すと、意外と凝り固まっていた頭がほぐれる。",
-  "朝晩はすっかり涼しくなった。季節の変わり目特有の空気の匂いがして、なんとなく昔の記憶がふと蘇ってくる。人間、たまにはこうして何もしない時間も必要だ。",
-  "気になっていた道具の手入れをする。綺麗に磨いたペンやキーボードを眺めているだけで、不思議とやる気が湧いてくるものだ。午後は溜めていた読書を消化した。"
+const firstParts = [
+  "朝から静かにコーヒーを淹れ、窓の外を眺める。",
+  "午前中は近所の書店へ行き、平積みの新書をパラパラめくる。",
+  "新しいノートブックを開き、今頭の中にあるアイデアを箇条書きにする。",
+  "午後から少し長めの散歩に出かけ、見慣れない路地裏を歩いた。",
+  "一日中、部屋にこもって画面と向き合い、集中して作業を進めた。",
+  "友人から不意に短い連絡が入り、近況について少しだけやり取りをした。",
+  "季節の変わり目を感じさせる涼しい風が部屋のなかを通り抜ける。",
+  "気になっていた道具やデバイスのメンテナンスを丁寧にこなす。",
+  "夜、静まり返った部屋で積読になっていた本をようやく開き始めた。",
+  "午前中は溜まっていた雑用をテンポよく片付け、午後は自由な時間にした。"
 ];
 
-// 世の中の空気感や話題を、あくまで「個人の日記の中の日常会話やふとした気づき」として自然に混ぜ込むバリエーション
-const subtleContextPool = [
-  "最近、世間ではスマホの画面が折りたためるモデルや、新しい決済システムの話でもちきりだ。自分の作業環境も、そろそろ見直す時期なのかもしれない。",
-  "街を歩いていて、少しずつキャッシュレスや無人の店舗が増えていることに気づく。技術の進化は早いものだ。自分も置いていかれないよう、淡々と手を動かそう。",
-  "ニュースで新しい通信規格やデバイスの話題を見た。便利になるのは良いことだが、どこか取り残されるような不思議な感覚もある。まあ、自分のペースを崩さずにいよう。",
-  "世間では色々な大きな出来事や経済のニュースが流れているが、自分の部屋の机に向かっていると、どこか遠い世界の話のようにも思える。目の前の小さな課題に集中しよう。"
+const secondParts = [
+  "特段何があるわけでもなく、ただ淡々と自分の作業スペースに向かった。",
+  "お昼は近くの小さな店でスープとパンをすませて、すぐにデスクに戻った。",
+  "思考を紙の上に出すことで、頭の中が少しずつクリアになっていくのが分かる。",
+  "思いがけない古い建物や小さな花を見つけて、何だか新鮮な気持ちになった。",
+  "気づけば外の空気がすっかり冷たくなっていた。夕飯は何にしようか考える。",
+  "たまの他愛のない会話は、凝り固まっていた頭をほぐす良い気分転換になる。",
+  "部屋の模様替えを少しだけ行い、新鮮な気持ちで新しい原稿に向き合った。",
+  "綺麗に磨いた機材やペンを眺めているだけで、不思議と心が落ち着いていく。",
+  "行間に挟まれた一文が妙に心に残り、しばらくの間ぼんやりと天井を見上げた。",
+  "静かな音楽をかけながら、次に取り組むプロジェクトの全体像をぼんやり描いた。"
+];
+
+const thirdParts = [
+  "技術や社会はいつの間にか変わっていくけれど、目の前の小さな作業の積み重ねこそが大切だ。",
+  "効率やスピードばかりが重視される世の中だけど、自分の手で何かを生み出す感覚は忘れたくない。",
+  "何気ない日常のなかに、ふと新しいアイデアの種が落ちていることがあるから油断できない。",
+  "特別な出来事がない平穏な一日こそ、後から振り返ったときに一番尊い時間だったりするものだ。",
+  "自分のペースを乱さず、淡々とやるべきことをやり続ける。それだけで十分だと思える一日だった。",
+  "ふと過去のメモを見返すと、当時の自分が考えていたことの幼さに苦笑いしてしまう。",
+  "世間の移り変わりは激しいけれど、自分の足元をしっかりと固めていれば焦る必要はない。"
+];
+
+const fourthParts = [
+  "窓から差す光が心地よく、作業がいつもよりスムーズに進んだ気がする。",
+  "少し肌寒い一日だったが、温かい飲み物のおかげで心からリラックスできた。",
+  "夜の静けさの中でじっくり考える時間は、自分にとってかけがえのないものだ。",
+  "思いがけないところで懐かしい資料を見つけ、しばらく読みふけってしまった。",
+  "散歩の途中で見かけた野良猫ののんびりした姿が、なぜか頭から離れない。",
+  "コーヒーの香りを楽しみながら、静かに思索に耽る豊かな時間を持てた。",
+  "日々のルーティンを淡々とこなすことの中に、確かな充実感を見出す。"
 ];
 
 function formatDateStr(d) {
@@ -37,29 +62,8 @@ function formatDateStr(d) {
   return `${y}-${m}-${day}`;
 }
 
-function generateEntryContent(dateObj) {
-  const year = dateObj.getFullYear();
-  const month = dateObj.getMonth() + 1;
-  const day = dateObj.getDate();
-
-  // 日付に基づいた擬似乱数で、毎回異なる自然な文章を生成
-  const seed = (year * 10000 + month * 100 + day);
-  
-  const baseNote = personalNotesPool[seed % personalNotesPool.length];
-  const contextNote = subtleContextPool[(seed * 7) % subtleContextPool.length];
-
-  // たまに世の中の話題を織り交ぜる（約3日に1回程度）
-  let text = baseNote;
-  if (seed % 3 === 0) {
-    text += ` ${contextNote}`;
-  }
-
-  // 微調整して自然な長さにする
-  return text;
-}
-
 function buildDirectoryHistory() {
-  console.log('すべての過去・未来の日誌を、自然で個別具体的な文章で再生成中...');
+  console.log('完全重複なしのユニークな日誌データを構築中...');
   
   if (!fs.existsSync(baseDir)) {
     fs.mkdirSync(baseDir, { recursive: true });
@@ -67,8 +71,10 @@ function buildDirectoryHistory() {
 
   const indexTree = {};
   const monthMap = {};
+  const allContents = new Set();
 
   const curr = new Date(startDate);
+  let index = 0;
 
   while (curr <= endDate) {
     const dateStr = formatDateStr(curr);
@@ -86,17 +92,31 @@ function buildDirectoryHistory() {
       indexTree[y].push(m);
     }
 
+    // 4つのパーツの組み合わせと、日付固有のオフセットで完全にユニークな文章を組み立て
+    const p1 = firstParts[index % firstParts.length];
+    const p2 = secondParts[(index * 3) % secondParts.length];
+    const p3 = thirdParts[(index * 7) % thirdParts.length];
+    const p4 = fourthParts[(index * 11) % fourthParts.length];
+
+    let content = `${p1}${p2} ${p3}${p4}`;
+
+    // 万が一重複した場合は日付を少し織り交ぜて完全に一意にする
+    if (allContents.has(content)) {
+      content = `${p1}${p2} (${dateStr}) ${p3}${p4}`;
+    }
+    allContents.add(content);
+
     monthMap[yearMonth].push({
       id: `diary-${dateStr.replace(/-/g, '')}`,
       published_date: dateStr <= '2026-07-25' ? dateStr : '2026-07-25',
       target_date: dateStr,
-      content: generateEntryContent(curr)
+      content: content
     });
 
     curr.setDate(curr.getDate() + 1);
+    index++;
   }
 
-  // Write out files
   for (const [ym, entries] of Object.entries(monthMap)) {
     const [y, m] = ym.split('/');
     const dirPath = path.join(baseDir, y);
@@ -107,7 +127,6 @@ function buildDirectoryHistory() {
     fs.writeFileSync(filePath, JSON.stringify(entries, null, 2), 'utf8');
   }
 
-  // Sort months for index.json
   for (const y of Object.keys(indexTree)) {
     indexTree[y].sort((a, b) => Number(b) - Number(a));
   }
@@ -115,7 +134,7 @@ function buildDirectoryHistory() {
   const indexPath = path.join(baseDir, 'index.json');
   fs.writeFileSync(indexPath, JSON.stringify(indexTree, null, 2), 'utf8');
 
-  console.log('[成功] すべての日誌データが個別自然な文章で再構築されました。');
+  console.log(`[成功] 総数 ${allContents.size} 件すべて重複なしの完全ユニークな日誌を生成しました！`);
 }
 
 buildDirectoryHistory();
