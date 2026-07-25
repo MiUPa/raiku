@@ -1,0 +1,22 @@
+{
+  "name": "raiku",
+  "version": "1.0.0",
+  "description": "合同会社来Q - Geminiが毎日半年後の世界を予想するブログ",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve .",
+    "generate-post": "node scripts/generate-prediction.js"
+  },
+  "keywords": [
+    "gemini",
+    "ai",
+    "future-prediction",
+    "raiku"
+  ],
+  "author": "合同会社来Q",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^0.1.1"
+  }
+}
